@@ -7,11 +7,11 @@ env.read_env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', [])
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS',)
 
-SECRET_KEY = env.str('SECRET_KEY', 'REPLACE_ME')
+SECRET_KEY = env.str('SECRET_KEY',)
 
-DEBUG = env.bool('DEBUG', True)
+DEBUG = env.bool('DEBUG',)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'debug_toolbar',
     'blog',
 ]
 
@@ -32,6 +32,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'sensive_blog.urls'
@@ -97,3 +98,5 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+INTERNAL_IPS = env.list('ALLOWED_HOSTS',)
