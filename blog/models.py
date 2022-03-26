@@ -10,6 +10,14 @@ class PostQuerySet(models.QuerySet):
         posts_at_year = self.filter(published_at__year=year).order_by('published_at')
         return posts_at_year
 
+    def popular(self):
+        posts = self.annotate(num_likes=Count('likes')).order_by('-num_likes')
+        return posts
+
+    def fetch_with_comments_count(self):
+        posts = self.annotate(num_comment=Count('comments')).order_by('-published_at')
+        return posts
+
 
 class TagQuerySet(models.QuerySet):
 
