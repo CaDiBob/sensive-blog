@@ -21,7 +21,7 @@ def serialize_post_optimized(post):
     return {
         'title': post.title,
         'teaser_text': post.text[:200],
-        'author': post.author.username,
+        'author': post.author,
         'comments_amount': post.num_comments,
         'image_url': post.image.url if post.image else None,
         'published_at': post.published_at,
@@ -56,10 +56,14 @@ def fetch_with_comments(posts):
 
 def index(request):
 
-    most_popular_posts = Post.objects.popular().prefetch_related('author')[:5]
+    most_popular_posts = Post.objects.popular()\
+                             .prefetch_related('author')\
+                             .prefetch_related('tags')[:5]
     fetch_with_comments(most_popular_posts)
 
-    most_fresh_posts = Post.objects.fetch_with_comments_count().prefetch_related('author')[:5]
+    most_fresh_posts = Post.objects.fetch_with_comments_count()\
+                           .prefetch_related('author')\
+                           .prefetch_related('tags')[:5]
     fetch_with_comments(most_fresh_posts)
 
     most_popular_tags = Tag.objects.popular()[:5]
