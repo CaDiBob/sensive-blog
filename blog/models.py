@@ -6,7 +6,7 @@ from django.db.models import Count
 
 class PostQuerySet(models.QuerySet):
 
-    def year(self, year):
+    def get_sort_by_year(self, year):
         posts_at_year = self.filter(published_at__year=year).order_by('published_at')
         return posts_at_year
 
@@ -17,6 +17,15 @@ class PostQuerySet(models.QuerySet):
     def fetch_with_comments_count(self):
         posts = self.annotate(num_comment=Count('comments')).order_by('-published_at')
         return posts
+
+    def fetch_with_comments(self):
+        popular_posts_ids = [post.id for post in self]
+        posts_with_comments = Post.objects.filter(id__in=popular_posts_ids).annotate(num_comments=Count('comments'))
+        ids_and_comments = posts_with_comments.values_list('id', 'num_comments')
+        count_for_id = dict(ids_and_comments)
+        for post in self:
+            post.num_comments = count_for_id[post.id]
+        return self
 
 
 class TagQuerySet(models.QuerySet):
